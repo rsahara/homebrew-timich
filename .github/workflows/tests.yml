@@ -1,0 +1,35 @@
+name: Test Formulae
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  timich-mcp:
+    name: timich-mcp (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-14
+          - ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install formula
+        run: brew install --formula ./Formula/timich-mcp.rb
+
+      - name: Test formula
+        run: brew test timich-mcp
